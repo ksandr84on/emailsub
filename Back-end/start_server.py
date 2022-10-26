@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify ,Response
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 import db_utility as db
 
@@ -7,14 +7,14 @@ CORS(app)
 
 
 # home method to empty api call
-@app.route("/", methods = ['POST','GET'])
+@app.route("/", methods=['POST', 'GET'])
 def home():
     out_data = "Looks like you are on wrong URL"
     return jsonify(out_data)
 
 
 # api method to add new email to subscription
-@app.route("/addSub", methods = ['POST'])
+@app.route("/addSub", methods=['POST'])
 def add_subscription():
     input_data = request.get_json()
     connection = db.get_connection()
@@ -36,52 +36,51 @@ def add_subscription():
                 INSERT INTO "main"."email_subs" ("email", "created_date") VALUES ('{}', date('now'));
             """.format(email)
 
-            
-            err = db.insert_update_delete(connection,query)
+            err = db.insert_update_delete(connection, query)
             if err:
                 return jsonify({
-                    "status":"error",
-                    "message":err
+                    "status": "error",
+                    "message": err
                 })
             inserted = connection.total_changes
             if inserted > 0:
                 return jsonify({
-                    "status":"success",
-                    "message":"Email added to subscription successfully"
+                    "status": "success",
+                    "message": "Email added to subscription successfully"
                 })
             else:
                 return jsonify({
-                    "status":"error",
-                    "message":"Error while subscribing"
+                    "status": "error",
+                    "message": "Error while subscribing"
                 })
         except Exception as e:
-            return Response(str(e),status=400, mimetype='application/json')
+            return Response(str(e), status=400, mimetype='application/json')
         finally:
             db.close_connection(connection)
     else:
-        return Response('Invalid/missing request parameter',status=400, mimetype='application/json')
+        return Response('Invalid/missing request parameter', status=400, mimetype='application/json')
 
 
 # get method to fetch all email in JSON
-@app.route("/getSubscriptions", methods = ['GET'])
+@app.route("/getSubscriptions", methods=['GET'])
 def get_subscriptions():
     connection = db.get_connection()
     try:
         query = """
            SELECT email,created_date "createdDate" from email_subs
         """
-        curr = db.select(connection,query)
+        curr = db.select(connection, query)
         result = []
         for row in curr:
-            result.append({"email":row[0],"subscriptionDate":row[1]})
-        
+            result.append({"email": row[0], "subscriptionDate": row[1]})
+
         return jsonify(result)
     except Exception as e:
-            return Response(str(e),status=400, mimetype='application/json')
+        return Response(str(e), status=400, mimetype='application/json')
     finally:
-            db.close_connection(connection)
+        db.close_connection(connection)
 
 
 # Setting port number and host i.e., localhost by default
 if __name__ == "__main__":
-    app.run(host='104.248.141.33', port=8520)
+    app.run(host='104.248.141.33', port=80)
