@@ -24,7 +24,7 @@ export default class Subscription extends Component {
         this.setState({ isLoading: true })
         this.setState({ status: null })
         if(this.state.email != null && this.state.email != ''){
-            fetch('http://localhost:8520/addSub', {
+            fetch('http://localhost:5000/addSub', {
             method: "POST",
             headers: {
                 "Accept": "application/json",

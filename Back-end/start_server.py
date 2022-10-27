@@ -83,4 +83,4 @@ def get_subscriptions():
 
 # Setting port number and host i.e., localhost by default
 if __name__ == "__main__":
-    app.run(host='104.248.141.33', port=80)
+    app.run(host='0.0.0.0', port=5000)
